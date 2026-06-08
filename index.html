@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AliGen Nexus | بوابة التواصل الرقمية الذكية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #080a10;
+            --bg-secondary: #0d1017;
+            --bg-card: rgba(255,255,255,0.02);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.4);
+            --text-muted: rgba(255,255,255,0.2);
+            --glass-border: rgba(212,175,55,0.1);
+            --glass-shadow: rgba(0,0,0,0.5);
+            --input-bg: rgba(255,255,255,0.03);
+            --input-border: rgba(255,255,255,0.08);
+            --section-alt: #0a0c14;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f8f7f4;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255,255,255,0.75);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --glass-border: rgba(180,140,20,0.18);
+            --glass-shadow: rgba(0,0,0,0.08);
+            --input-bg: rgba(0,0,0,0.03);
+            --input-border: rgba(0,0,0,0.1);
+            --section-alt: #f0efe9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.6s ease, color 0.6s ease;
+        }
+        ::selection { background: rgba(212,175,55,0.3); color: #fff; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 10px; }
+
+        /* Scroll Progress */
+        #scrollProgress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #d4af37, #f5d76e); z-index: 9999; transition: width 0.1s; }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed; inset: 0; z-index: 99999; background: #080a10;
+            display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-ring {
+            width: 50px; height: 50px; border: 3px solid rgba(212,175,55,0.1);
+            border-top-color: #d4af37; border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Glass Card */
+        .glass-gold {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px var(--glass-shadow), inset 0 0 30px rgba(212,175,55,0.015);
+            transition: background 0.6s, border-color 0.6s, box-shadow 0.6s;
+        }
+
+        /* Cyber Grid */
+        .cyber-grid {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(212,175,55,0.025) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(212,175,55,0.025) 1px, transparent 1px);
+            animation: moveGrid 25s linear infinite;
+        }
+        [data-theme="light"] .cyber-grid {
+            background-image: linear-gradient(to right, rgba(180,140,20,0.04) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(180,140,20,0.04) 1px, transparent 1px);
+        }
+        @keyframes moveGrid { 0%{transform:translateY(0)} 100%{transform:translateY(-50px)} }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%; padding: 13px 44px 13px 16px; background: var(--input-bg);
+            border: 1px solid var(--input-border); border-radius: 12px;
+            color: var(--text-primary); font-size: 14px; font-family: 'Tajawal', sans-serif;
+            outline: none; transition: all 0.3s ease;
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-input:focus {
+            border-color: #d4af37; background: var(--input-bg);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.08);
+        }
+        .form-input:valid:not(:placeholder-shown) { border-color: rgba(34,197,94,0.4); }
+        select.form-input { appearance: none; -webkit-appearance: none; cursor: pointer; }
+        .form-input-icon {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); pointer-events: none; transition: color 0.3s;
+        }
+        .form-input:focus ~ .form-input-icon { color: #d4af37; }
+
+        /* Buttons */
+        .btn-premium {
+            background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
+            color: #0d0f12; font-weight: 700; padding: 14px 32px; border-radius: 12px;
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none;
+            font-family: 'Tajawal', sans-serif; font-size: 15px;
+            transition: all 0.3s ease; box-shadow: 0 4px 25px rgba(212,175,55,0.25);
+            position: relative; overflow: hidden;
+        }
+        .btn-premium:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(212,175,55,0.4); }
+        .btn-premium:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-premium::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: rotate(45deg) translateX(-100%); transition: 0.7s;
+        }
+        .btn-premium:hover::after { transform: rotate(45deg) translateX(100%); }
+
+        .btn-outline {
+            background: transparent; border: 1px solid rgba(212,175,55,0.4);
+            color: #d4af37; font-weight: 600; padding: 14px 32px; border-radius: 12px;
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-size: 15px; transition: all 0.3s ease;
+            animation: pulseBorder 2s ease-in-out infinite;
+        }
+        .btn-outline:hover { background: rgba(212,175,55,0.1); border-color: #d4af37; }
+        @keyframes pulseBorder { 0%,100%{border-color:rgba(212,175,55,0.3)} 50%{border-color:rgba(212,175,55,0.7)} }
+
+        /* File Drop Zone */
+        .file-drop-zone {
+            border: 2px dashed rgba(212,175,55,0.15); background: var(--input-bg);
+            transition: all 0.3s ease; cursor: pointer; border-radius: 14px;
+        }
+        .file-drop-zone:hover, .file-drop-zone.dragover {
+            border-color: #d4af37; background: rgba(212,175,55,0.04);
+        }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; }
+        .toast {
+            padding: 16px 24px; border-radius: 14px; margin-bottom: 10px; color: white;
+            display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: toastIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) forwards;
+        }
+        .toast.success { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.3); }
+        .toast.error { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+        @keyframes toastIn { from{opacity:0;transform:translateY(-30px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes toastOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-30px)} }
+
+        /* Char Counter */
+        .char-counter { font-size: 11px; color: var(--text-muted); transition: color 0.3s; }
+        .char-counter.warning { color: #facc15; }
+        .char-counter.danger { color: #ef4444; }
+
+        /* Accordion */
+        .accordion-item { border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+        .accordion-item:hover { border-color: rgba(212,175,55,0.25); }
+        .accordion-header { cursor: pointer; padding: 20px 24px; display: flex; align-items: center; gap: 16px; transition: background 0.3s; }
+        .accordion-header:hover { background: rgba(212,175,55,0.03); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), padding 0.3s; padding: 0 24px; }
+        .accordion-item.open .accordion-body { max-height: 300px; padding: 0 24px 20px; }
+        .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+        .accordion-chevron { transition: transform 0.4s ease; flex-shrink: 0; }
+
+        /* Counter Animation */
+        .metric-card { text-align: center; padding: 32px 16px; }
+        .metric-number { font-size: 3rem; font-weight: 900; line-height: 1; background: linear-gradient(135deg, #f5d76e, #d4af37, #aa8416); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* Feature Card */
+        .feature-card {
+            padding: 28px; border-radius: 20px; transition: all 0.4s ease;
+            border: 1px solid var(--glass-border); background: var(--bg-card);
+            backdrop-filter: blur(12px);
+        }
+        .feature-card:hover { transform: translateY(-4px); border-color: rgba(212,175,55,0.3); box-shadow: 0 12px 40px rgba(212,175,55,0.08); }
+        .feature-icon {
+            width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+            margin-bottom: 16px; transition: all 0.3s;
+        }
+        .feature-card:hover .feature-icon { background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.08)); transform: scale(1.05); }
+
+        /* Success State */
+        .success-state {
+            display: none; text-align: center; padding: 60px 20px;
+            animation: successFade 0.6s ease forwards;
+        }
+        .success-state.active { display: block; }
+        @keyframes successFade { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+        .success-check {
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 24px;
+            background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
+            border: 2px solid rgba(34,197,94,0.3); display: flex; align-items: center; justify-content: center;
+            animation: checkPop 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) 0.3s both;
+        }
+        @keyframes checkPop { from{transform:scale(0)} to{transform:scale(1)} }
+
+        /* Chip / Tag */
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            border-radius: 10px; font-size: 12px; font-weight: 500; cursor: pointer;
+            border: 1px solid var(--input-border); color: var(--text-secondary);
+            transition: all 0.3s; user-select: none; background: transparent;
+        }
+        .chip:hover { border-color: rgba(212,175,55,0.3); color: var(--text-primary); }
+        .chip.selected { border-color: #d4af37; background: rgba(212,175,55,0.08); color: #d4af37; }
+
+        /* Confetti Canvas */
+        #confettiCanvas { position: fixed; inset: 0; z-index: 99998; pointer-events: none; }
+
+        /* Particle Canvas */
+        #particleCanvas { position: absolute; inset: 0; z-index: 0; }
+
+        /* Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Nav */
+        .nav-link { position: relative; padding: 6px 0; color: var(--text-secondary); transition: color 0.3s; font-size: 13px; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { color: #d4af37; }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 2px; background: #d4af37; transition: width 0.3s; border-radius: 2px; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed; inset: 0; z-index: 9990; background: rgba(8,10,16,0.95);
+            backdrop-filter: blur(20px); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 24px;
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+        }
+        .mobile-menu.open { opacity: 1; visibility: visible; }
+        .mobile-menu a { font-size: 20px; font-weight: 600; color: var(--text-secondary); transition: color 0.3s; }
+        .mobile-menu a:hover { color: #d4af37; }
+
+        /* Section divider */
+        .section-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.12);
+            border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .metric-number { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader">
+    <div class="loader-ring"></div>
+    <span style="color: #d4af37; font-size: 13px; font-weight: 600; letter-spacing: 3px;">علي سهيل</span>
+</div>
+
+<!-- Scroll Progress -->
+<div id="scrollProgress" style="width: 0%"></div>
+
+<!-- Confetti Canvas -->
+<canvas id="confettiCanvas"></canvas>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="mobile-menu">
+    <button onclick="toggleMobileMenu()" style="position:absolute;top:20px;left:20px;background:none;border:none;color:var(--text-primary);cursor:pointer;">
+        <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <a href="#hero" onclick="toggleMobileMenu()">الرئيسية</a>
+    <a href="#contact" onclick="toggleMobileMenu()">تواصل سريع</a>
+    <a href="#launchpad" onclick="toggleMobileMenu()">إطلاق مشروع</a>
+    <a href="#metrics" onclick="toggleMobileMenu()">الإنجازات</a>
+    <a href="#faq" onclick="toggleMobileMenu()">الأسئلة الشائعة</a>
+    <a href="#features" onclick="toggleMobileMenu()">المواصفات</a>
+</div>
+
+<!-- Navigation -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-[9995] transition-all duration-500" style="background:transparent;">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <a href="#hero" class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+                <span class="text-black font-black text-sm">A</span>
+            </div>
+            <span class="font-bold text-sm" style="color:var(--text-primary)">Ali<span class="text-amber-500"> Suhail</span></span>
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#contact" class="nav-link">تواصل سريع</a>
+            <a href="#launchpad" class="nav-link">إطلاق مشروع</a>
+            <a href="#metrics" class="nav-link">الإنجازات</a>
+            <a href="#faq" class="nav-link">الأسئلة الشائعة</a>
+            <a href="#features" class="nav-link">المواصفات</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="themeToggle" class="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-amber-500/10" style="border:1px solid var(--glass-border);color:var(--text-secondary);" title="تبديل المظهر">
+                <i data-lucide="moon" class="w-4 h-4" id="themeIcon"></i>
+            </button>
+            <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl flex items-center justify-center" style="border:1px solid var(--glass-border);color:var(--text-secondary);background:transparent;cursor:pointer;">
+                <i data-lucide="menu" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden cyber-grid">
+    <canvas id="particleCanvas"></canvas>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[180px] animate-pulse"></div>
+        <div class="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-blue-500/[0.03] rounded-full blur-[150px] animate-pulse" style="animation-delay:3s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/[0.02] rounded-full blur-[200px]"></div>
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center pt-20">
+        <div class="reveal">
+            <div class="section-badge mb-8">
+                <i data-lucide="cpu" class="w-4 h-4 text-amber-500 animate-pulse"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">ALIGEN NEXUS SYSTEM</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6" style="color:var(--text-primary)">
+                نُشكل مستقبل الأفكار الرقمية
+                <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 via-yellow-500 to-amber-700">مرحباً بك في البوابة الرقمية ل علي سهيل</span>
+            </h1>
+            <p class="text-base sm:text-lg max-w-3xl mx-auto leading-relaxed mb-10" style="color:var(--text-secondary)">
+                منصتك الذكية والتفاعلية للتواصل المباشر. سواء كنت تبحث عن مطور ويب خبير، مصمم واجهات مستخدم (UI/UX) شغوف، أو شريك تقني لتحويل رؤيتك إلى منتج رقمي استثنائي يعتمد على تقنيات الذكاء الاصطناعي.. <strong class="text-amber-500">رحلتك تبدأ من هنا.</strong>
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#contact" class="btn-outline w-full sm:w-auto justify-center">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    تواصل سريع
+                </a>
+                <a href="#launchpad" class="btn-premium w-full sm:w-auto justify-center">
+                    <i data-lucide="rocket" class="w-4 h-4"></i>
+                    إطلاق مشروع جديد
+                </a>
+            </div>
+        </div>
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <span class="text-[10px] tracking-widest" style="color:var(--text-muted)">SCROLL</span>
+            <i data-lucide="chevron-down" class="w-4 h-4" style="color:var(--text-muted)"></i>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SMART CONTACT HUB ==================== -->
+<section id="contact" class="py-20 sm:py-28 px-4 relative" style="background:var(--section-alt)">
+    <div class="absolute inset-0 pointer-events-none cyber-grid" style="opacity:0.5"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+        <div class="text-center mb-12 reveal">
+            <div class="section-badge">
+                <i data-lucide="message-circle" class="w-4 h-4 text-amber-500"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">SMART CONTACT HUB</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color:var(--text-primary)">مركز المراسلة <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 to-yellow-600">الذكي</span></h2>
+            <p class="text-sm max-w-xl mx-auto" style="color:var(--text-secondary)">نموذج ديناميكي ذكي لتجربة تواصل سلسة وآمنة. رسالتك مشفرة ومحمية بالكامل.</p>
+        </div>
+
+        <div class="glass-gold rounded-3xl p-5 sm:p-8 lg:p-10 relative overflow-hidden reveal">
+            <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-amber-500/[0.04] to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-blue-500/[0.03] to-transparent pointer-events-none"></div>
+
+            <!-- Contact Form -->
+            <form id="contactForm" class="relative z-10 space-y-5" novalidate>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">👤 الاسم الكامل <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <input type="text" id="c_fullName" class="form-input" placeholder="أدخل اسمك الكامل" required>
+                            <i data-lucide="user" class="w-4 h-4 form-input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">✉️ البريد الإلكتروني</label>
+                        <div class="relative">
+                            <input type="email" id="c_email" class="form-input" placeholder="example@domain.com" dir="ltr">
+                            <i data-lucide="mail" class="w-4 h-4 form-input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">📞 رقم الهاتف <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <input type="tel" id="c_phone" class="form-input" placeholder="+967 7XX XXX XXX" dir="ltr" required>
+                            <i data-lucide="smartphone" class="w-4 h-4 form-input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">🌍 الدولة</label>
+                        <div class="relative">
+                            <select id="c_country" class="form-input">
+                                <option value="" disabled selected>اختر الدولة</option>
+                                <option>اليمن</option><option>السعودية</option><option>الإمارات</option>
+                                <option>الكويت</option><option>قطر</option><option>البحرين</option>
+                                <option>عُمان</option><option>مصر</option><option>الأردن</option>
+                                <option>العراق</option><option>المغرب</option><option>تونس</option><option>أخرى</option>
+                            </select>
+                            <i data-lucide="globe" class="w-4 h-4 form-input-icon"></i>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:var(--text-muted)"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative" id="c_companyGroup">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">🏢 اسم المنشأة / الشركة <span style="color:var(--text-muted)">(اختياري)</span></label>
+                    <div class="relative">
+                        <input type="text" id="c_company" class="form-input" placeholder="اسم الجهة">
+                        <i data-lucide="building-2" class="w-4 h-4 form-input-icon"></i>
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">📋 تصنيف طبيعة التواصل</label>
+                    <div class="relative">
+                        <select id="c_reason" class="form-input" onchange="updateSubjectSuggestions()" required>
+    <option value="" disabled selected hidden>🎯 اختر طبيعة التواصل</option>
+    <option value="project">🚀 طلب مشروع جديد</option>
+    <option value="consultation">💡 استشارة تقنية</option>
+    <option value="partnership">🤝 شراكة واستثمار</option>
+    <option value="suggestion">✨ اقتراح وتطوير</option>
+    <option value="support">🛠️ دعم فني وصيانة</option>
+    <option value="general">❓ استفسار عام</option>
+</select>
+
+                        <i data-lucide="tag" class="w-4 h-4 form-input-icon"></i>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:var(--text-muted)"></i>
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">📌 عنوان الموضوع</label>
+                    <div class="relative">
+                        <input type="text" id="c_subject" class="form-input" placeholder="اختر نوع التواصل أولاً ليقترح لك عناوين مناسبة" list="subjectSuggestions">
+                        <datalist id="subjectSuggestions"></datalist>
+                        <i data-lucide="bookmark" class="w-4 h-4 form-input-icon"></i>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-[11px] font-medium" style="color:var(--text-secondary)">📝 تفاصيل الرسالة</label>
+                        <span id="c_charCounter" class="char-counter">0 / 1000</span>
+                    </div>
+                    <textarea id="c_message" class="form-input h-32 resize-none" placeholder="اكتب رسالتك بتفصيل مناسب.." maxlength="1000"></textarea>
+                </div>
+                <div class="flex flex-col items-center gap-4 pt-3">
+                    <button type="submit" id="c_submitBtn" class="btn-premium w-full sm:w-auto justify-center">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span id="c_submitText">إرسال الرسالة بأمان</span>
+                    </button>
+                    <p class="text-[10px] flex items-center gap-1" style="color:var(--text-muted)">
+                        <i data-lucide="lock" class="w-3 h-3"></i>
+                        محمي بتشفير متقدم • يتم الرد خلال 24 ساعة
+                    </p>
+                </div>
+            </form>
+
+            <!-- Success State -->
+            <div id="contactSuccess" class="success-state">
+                <div class="success-check">
+                    <i data-lucide="check" class="w-10 h-10 text-green-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3" style="color:var(--text-primary)">تم الإرسال بنجاح!</h3>
+                <p class="text-sm leading-relaxed max-w-md mx-auto mb-6" style="color:var(--text-secondary)">
+                    شكراً لثقتك، تم تشفير رسالتك وإرسالها بنجاح. سيتواصل معك <strong class="text-amber-500">علي شخصياً</strong> خلال 24 ساعة.
+                </p>
+                <button onclick="resetContactForm()" class="btn-outline text-sm">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> إرسال رسالة أخرى
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== PROJECT LAUNCHPAD ==================== -->
+<section id="launchpad" class="py-20 sm:py-28 px-4 relative">
+    <div class="absolute inset-0 pointer-events-none cyber-grid" style="opacity:0.3"></div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-amber-500/[0.03] rounded-full blur-[150px]"></div>
+    </div>
+    <div class="max-w-4xl mx-auto relative z-10">
+        <div class="text-center mb-12 reveal">
+            <div class="section-badge">
+                <i data-lucide="rocket" class="w-4 h-4 text-amber-500"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">PROJECT LAUNCHPAD</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color:var(--text-primary)">منصة تقديم <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 to-yellow-600">المشاريع</span></h2>
+            <p class="text-sm max-w-xl mx-auto" style="color:var(--text-secondary)">قسم مخصص للعملاء الجادين. صُمم لرفع قيمة خدمتك وضمان فهم عميق لمشروعك.</p>
+        </div>
+
+        <div class="glass-gold rounded-3xl p-5 sm:p-8 lg:p-10 relative overflow-hidden reveal" style="border-color:rgba(212,175,55,0.15)">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-transparent via-amber-500/30 to-transparent"></div>
+
+            <form id="projectForm" class="relative z-10 space-y-5" novalidate>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">🌟 اسم المشروع المقترح <span style="color:var(--text-muted)">(الحلم الرقمي الخاص بك)</span></label>
+                    <div class="relative">
+                        <input type="text" id="p_name" class="form-input" placeholder="مثال: منصة تجارة إلكترونية ذكية" required>
+                        <i data-lucide="sparkles" class="w-4 h-4 form-input-icon"></i>
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">🏷️ تصنيف المشروع</label>
+                    <div class="relative">
+                        <select id="p_category" class="form-input">
+                            <option value="" disabled selected>اختر التصنيف</option>
+                            <option>متجر إلكتروني متكامل</option>
+                            <option>موقع تعريفي فاخر</option>
+                            <option>تطبيق ويب ذكي</option>
+                            <option>تطوير منصة قائمة</option>
+                            <option>نظام إدارة محتوى (CMS)</option>
+                            <option>منصة SaaS</option>
+                            <option>تطبيق جوال (PWA)</option>
+                          <option>تصميم cv شخصي</option>
+                            <option>أخرى</option>
+                        </select>
+                        <i data-lucide="layers" class="w-4 h-4 form-input-icon"></i>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:var(--text-muted)"></i>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-[11px] font-medium" style="color:var(--text-secondary)">📖 ملخص الرؤية والفكرة</label>
+                        <span id="p_charCounter" class="char-counter">0 / 2000</span>
+                    </div>
+                    <textarea id="p_vision" class="form-input h-36 resize-none" placeholder="اشرح لنا شغفك وماذا تريد تحقيقه.. كلما كانت التفاصيل أوضح، كان النتيجة أفضل" maxlength="2000"></textarea>
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-3" style="color:var(--text-secondary)">⚡ الميزات المنشودة <span style="color:var(--text-muted)">(اختر ما يناسبك)</span></label>
+                    <div class="flex flex-wrap gap-2" id="featureChips">
+                        <button type="button" class="chip" data-value="نظام دفع إلكتروني">💳 نظام دفع</button>
+                        <button type="button" class="chip" data-value="ربط ذكاء اصطناعي">🤖 ذكاء اصطناعي</button>
+                        <button type="button" class="chip" data-value="لوحة تحكم متقدمة">📊 لوحة تحكم</button>
+                        <button type="button" class="chip" data-value="رسوم متحركة متطورة">✨ رسوم متحركة</button>
+                        <button type="button" class="chip" data-value="نظام تسجيل دخول">🔑 تسجيل دخول</button>
+                        <button type="button" class="chip" data-value="تعدد اللغات">🌐 تعدد اللغات</button>
+                        <button type="button" class="chip" data-value="تحسين SEO">🔍 تحسين SEO</button>
+                        <button type="button" class="chip" data-value="ربط APIs خارجية">🔗 ربط APIs</button>
+                        <button type="button" class="chip" data-value="إشعارات فورية">🔔 إشعارات فورية</button>
+                        <button type="button" class="chip" data-value="تقارير وإحصائيات">📈 تقارير وإحصائيات</button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">📎 ركن المرفقات والمستندات</label>
+                    <div id="projectDropZone" class="file-drop-zone p-8 text-center relative">
+                        <input type="file" id="p_files" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" multiple accept=".pdf,.doc,.docx,.zip,.png,.jpg,.jpeg">
+                        <i data-lucide="upload-cloud" class="w-10 h-10 mx-auto mb-3" style="color:rgba(212,175,55,0.4)"></i>
+                        <p class="text-sm" style="color:var(--text-secondary)">اسحب الملفات وأفلتها هنا أو <span class="text-amber-400 underline font-medium">تصفح جهازك</span></p>
+                        <p class="text-[10px] mt-2" style="color:var(--text-muted)">PDF, Word, ZIP, PNG/JPG — الحد الأقصى 25 ميجابايت</p>
+                    </div>
+                    <div id="p_fileList" class="mt-3 space-y-2"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">👤 اسمك الكامل <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <input type="text" id="p_fullName" class="form-input" placeholder="الاسم الكامل" required>
+                            <i data-lucide="user" class="w-4 h-4 form-input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <label class="block text-[11px] font-medium mb-2" style="color:var(--text-secondary)">📞 رقم الواتساب <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <input type="tel" id="p_phone" class="form-input" placeholder="+967 7XX XXX XXX" dir="ltr" required>
+                            <i data-lucide="phone" class="w-4 h-4 form-input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-4 pt-3">
+                    <button type="submit" id="p_submitBtn" class="btn-premium w-full sm:w-auto justify-center text-base">
+                        <i data-lucide="rocket" class="w-5 h-5"></i>
+                        <span id="p_submitText">إرسال ملف المشروع وبدء التنفيذ</span>
+                    </button>
+                    <p class="text-[10px] flex items-center gap-1" style="color:var(--text-muted)">
+                        <i data-lucide="shield-check" class="w-3 h-3"></i>
+                        بياناتك ومشروعك محميان بتشفير آمن
+                    </p>
+                </div>
+            </form>
+
+            <!-- Success State -->
+            <div id="projectSuccess" class="success-state">
+                <div class="success-check" style="background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border-color:rgba(212,175,55,0.3);">
+                    <i data-lucide="trophy" class="w-10 h-10 text-amber-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3" style="color:var(--text-primary)">تم استلام مخطط مشروعك!</h3>
+                <p class="text-sm leading-relaxed max-w-md mx-auto mb-6" style="color:var(--text-secondary)">
+                    جاري مراجعته لجدولة جلسة <strong class="text-amber-500">استشارية مجانية</strong> قريباً. سيتواصل معك أ/علي سهيل خلال 12 ساعة.
+                </p>
+                <button onclick="resetProjectForm()" class="btn-outline text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> تقديم مشروع آخر
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== LIVE METRICS ==================== -->
+<section id="metrics" class="py-20 sm:py-28 px-4 relative" style="background:var(--section-alt)">
+    <div class="absolute inset-0 pointer-events-none cyber-grid" style="opacity:0.4"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+        <div class="text-center mb-14 reveal">
+            <div class="section-badge">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-amber-500"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">LIVE METRICS</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold" style="color:var(--text-primary)">لوحة المؤشرات <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 to-yellow-600">والإحصائيات</span></h2>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 reveal">
+            <div class="glass-gold rounded-2xl metric-card">
+                <div class="metric-number" data-target="50" data-suffix="+">0</div>
+                <p class="text-xs mt-3 leading-relaxed" style="color:var(--text-secondary)">مشروع رقمي متكامل<br>تم تشغيله بنجاح</p>
+            </div>
+            <div class="glass-gold rounded-2xl metric-card">
+                <div class="metric-number" data-target="2" data-suffix="+">0</div>
+                <p class="text-xs mt-3 leading-relaxed" style="color:var(--text-secondary)">سنوات من الخبرة<br>في صياغة الكود والتصميم</p>
+            </div>
+            <div class="glass-gold rounded-2xl metric-card">
+                <div class="metric-number" data-target="100" data-suffix="%">0</div>
+                <p class="text-xs mt-3 leading-relaxed" style="color:var(--text-secondary)">نسبة رضا العملاء<br>والشركاء التقنيين</p>
+            </div>
+            <div class="glass-gold rounded-2xl metric-card">
+                <div class="metric-number" data-target="0" data-suffix="" data-text="⚡ فوري">0</div>
+                <p class="text-xs mt-3 leading-relaxed" style="color:var(--text-secondary)">معدل الاستجابة<br>ومعالجة الطلبات</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section id="faq" class="py-20 sm:py-28 px-4 relative">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-amber-500/[0.02] rounded-full blur-[120px]"></div>
+    </div>
+    <div class="max-w-3xl mx-auto relative z-10">
+        <div class="text-center mb-14 reveal">
+            <div class="section-badge">
+                <i data-lucide="help-circle" class="w-4 h-4 text-amber-500"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">INTERACTIVE FAQ</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold" style="color:var(--text-primary)">الأسئلة <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 to-yellow-600">الشائعة</span></h2>
+        </div>
+        <div class="space-y-3 reveal" id="faqContainer">
+            <div class="accordion-item" style="background:var(--bg-card)">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="text-amber-500 text-lg">Q</span>
+                    <span class="flex-1 text-sm font-medium" style="color:var(--text-primary)">كم تستغرق مدة تنفيذ وتطوير المشروع؟</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 accordion-chevron" style="color:var(--text-muted)"></i>
+                </div>
+                <div class="accordion-body">
+                    <p class="text-sm leading-relaxed" style="color:var(--text-secondary)">تعتمد المدة على حجم وتعقيد المشروع، لكن المشاريع التعريفية الفاخرة تستغرق عادةً من <strong class="text-amber-500">7 إلى 14 يوماً</strong>، بينما المنصات الكبرى والمتاجر تتراوح بين <strong class="text-amber-500">3 إلى 6 أسابيع</strong>.</p>
+                </div>
+            </div>
+            <div class="accordion-item" style="background:var(--bg-card)">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="text-amber-500 text-lg">Q</span>
+                    <span class="flex-1 text-sm font-medium" style="color:var(--text-primary)">ما هي آلية وطرق الدفع المعتمدة؟</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 accordion-chevron" style="color:var(--text-muted)"></i>
+                </div>
+                <div class="accordion-body">
+                    <p class="text-sm leading-relaxed" style="color:var(--text-secondary)">نوفر مرونة عالية في الدفع؛ حيث يتم تقسيم المبلغ على دفعات (<strong class="text-amber-500">مقدم تعاقد، بعد اعتماد التصميم، وقبل الإطلاق التجريبي</strong>) عبر وسائل الدفع الإلكترونية المتاحة.</p>
+                </div>
+            </div>
+            <div class="accordion-item" style="background:var(--bg-card)">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="text-amber-500 text-lg">Q</span>
+                    <span class="flex-1 text-sm font-medium" style="color:var(--text-primary)">هل يتوقف العمل بمجرد تسليم المشروع؟</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 accordion-chevron" style="color:var(--text-muted)"></i>
+                </div>
+                <div class="accordion-body">
+                    <p class="text-sm leading-relaxed" style="color:var(--text-secondary)">مطلقاً. كل مشروع يتضمن فترة <strong class="text-amber-500">دعم فني وضمان مجاني</strong> تشمل الحماية، النسخ الاحتياطي، وتدريبك على لوحة التحكم لضمان استقرار عمل منصتك.</p>
+                </div>
+            </div>
+            <div class="accordion-item" style="background:var(--bg-card)">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="text-amber-500 text-lg">Q</span>
+                    <span class="flex-1 text-sm font-medium" style="color:var(--text-primary)">لدي موقع قديم، هل يمكن تحديثه وتطويره؟</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 accordion-chevron" style="color:var(--text-muted)"></i>
+                </div>
+                <div class="accordion-body">
+                    <p class="text-sm leading-relaxed" style="color:var(--text-secondary)">بكل تأكيد. يمكننا <strong class="text-amber-500">إعادة بناء موقعك بالكامل</strong>، تحسين تجربة المستخدم (UI/UX)، وترقية التقنيات المستخدمة ليتوافق مع أحدث المعايير العالمية.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== PREMIUM FEATURES ==================== -->
+<section id="features" class="py-20 sm:py-28 px-4 relative" style="background:var(--section-alt)">
+    <div class="absolute inset-0 pointer-events-none cyber-grid" style="opacity:0.3"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+        <div class="text-center mb-14 reveal">
+            <div class="section-badge">
+                <i data-lucide="crown" class="w-4 h-4 text-amber-500"></i>
+                <span class="text-xs text-amber-500 font-semibold tracking-widest">PREMIUM FEATURES</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4" style="color:var(--text-primary)">المواصفات والسمات <span class="text-transparent bg-clip-text bg-gradient-to-l from-amber-300 to-yellow-600">الفنية الفاخرة</span></h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="diamond" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">جمالية Premium Glassmorphic</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">خلفيات ضبابية متدرجة، حواف مضيئة، وظلال ناعمة تمنح الموقع عمقاً ثلاثي الأبعاد وعصرياً.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="brain" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">لمسات الذكاء الاصطناعي</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">تأثيرات حركية خلفية مستوحاة من الشبكات العصبية وجزيئات الضوء المتفاعلة مع حركة الماوس.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="sun-moon" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">التبديل الانسيابي Dynamic Theme</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">الانتقال بين الوضع المظلم الفاخر والوضع النهاري المريح للعين بسلاسة تامة.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="monitor-smartphone" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">استجابة مطلقة Fluid</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">تجربة تصفح مثالية ومثيرة للإعجاب سواء من شاشات الهواتف الذكية أو شاشات العرض الضخمة.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">أداء صاروخي Ultra-Fast</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">كود برمجي نظيف وخفيف يضمن التحميل الفوري للموقع وتصدر نتائج محركات البحث.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i data-lucide="bell-ring" class="w-5 h-5 text-amber-500"></i></div>
+                <h3 class="font-bold text-sm mb-2" style="color:var(--text-primary)">منظومة الإشعارات الفورية</h3>
+                <p class="text-xs leading-relaxed" style="color:var(--text-secondary)">ربط فوري عبر Firebase لإرسال تنبيهات لحظية لهاتفك بمجرد ضغط على زر الإرسال.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+  
+<footer class="py-12 px-4 text-center" style="border-top:1px solid var(--glass-border)">
+    <div class="max-w-4xl mx-auto">
+      <footer class="futuristic-footer">
+    <div class="footer-line"></div>
+    <p class="footer-text">تمت الهندسة الرقمية والإبداع الفني بواسطة</p>
+    <div class="designer-branding">
+    
+        <div class="flex items-center justify-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+                <span class="text-black font-black text-xs">A</span>
+            </div>
+            <span class="font-bold text-sm" style="color:var(--text-primary)">AliGen<span class="text-amber-500"> Nexus</span></span>
+        </div>
+        <p class="text-xs leading-relaxed max-w-lg mx-auto mb-6" style="color:var(--text-secondary)">
+            بوابة تواصل رقمية ذكية وفائقة الفخامة، صُممت لتكون الجسر الاحترافي المباشر بين المطور والمهندس علي سهيل وعملائه حول العالم.
+            <!-- حاوية الأزرار التفاعلية -->
+        <div class="footer-buttons-container">
+            <a href="https://aligen-nex-fduws5fc.manus.space" target="_blank" class="agbtn">
+                <i class="fas fa-globe"></i> زيارة موقعي الإلكتروني
+            </a>
+        </p>
+         <div class="agmail" id="copyMail">
+            <i class="fas fa-envelope"></i>aligen@alisuhail.com 
+        </div>
+    </div>
+    <p class="footer-copy">جميع الحقوق محفوظة © علي سهيل | 2026 م • 1447 هـ</p>
+        </div>
+        
+<style>
+:root {
+    /* ألوان افتراضية متناسقة مع كودك */
+    --gold: #d4a843;
+    --gold-light: #f3d487;
+    --cream: #f4f1ea;
+    --cream-dark: #bfae96;
+}
+
+.futuristic-footer {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+    z-index: 10;
+    background: transparent;
+}
+
+/* خط فاصل علوي متدرج */
+.futuristic-footer .footer-line {
+    width: 250px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 25px;
+    opacity: 0.6;
+}
+
+/* النص التمهيدي الناعم */
+.futuristic-footer .footer-text {
+    font-size: 0.9rem;
+    color: var(--cream-dark);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+}
+
+/* حاوية الهوية الرقمية مرتبة عمودياً */
+.futuristic-footer .designer-branding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* الاسم كعنوان رئيسي داخل كبسولة فخمة بتأثير زجاجي ذهبي وعنابي */
+.futuristic-footer .brand-dev-capsule {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--gold-light);
+    background: linear-gradient(135deg, rgba(107,29,58,0.45), rgba(26,92,71,0.35));
+    border: 1px solid var(--gold);
+    padding: 8px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(212,168,67,0.15);
+    text-shadow: 0 0 10px rgba(212,168,67,0.3);
+    transition: all 0.4s ease;
+}
+
+/* تأثير تفاعلي عند تمرير الماوس فوق كبسولة الاسم */
+.futuristic-footer .brand-dev-capsule:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(212,168,67,0.25);
+    background: linear-gradient(135deg, rgba(107,29,58,0.6), rgba(26,92,71,0.5));
+    color: #fff;
+}
+
+/* اسم البراند تحت الاسم مباشرة */
+.futuristic-footer .brand-nexus-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    margin-bottom: 5px;
+}
+
+/* حاوية الأزرار لترتيبها بجانب بعضها */
+.futuristic-footer .footer-buttons-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* التنسيق الأساسي للأزرار (مستوحى من تصميم الـ agbtn الأصلي لديك) */
+.futuristic-footer .agbtn {
+    text-decoration: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    color: var(--cream);
+    border: 1px solid rgba(212,168,67,0.4);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(5px);
+    padding: 8px 18px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.futuristic-footer .agbtn:hover {
+    border-color: var(--gold);
+    background: rgba(212,168,67,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212,168,67,0.15);
+}
+
+/* تمييز إضافي لزر التواصل ليعطي شعوراً بالإطلاق والمبادرة */
+.futuristic-footer .contact-btn {
+    border-color: var(--gold);
+    background: linear-gradient(90deg, rgba(212,168,67,0.15), transparent);
+}
+
+.futuristic-footer .contact-btn:hover {
+    background: linear-gradient(90deg, rgba(212,168,67,0.25), rgba(212,168,67,0.05));
+}
+
+/* تنسيق البريد الإلكتروني */
+.futuristic-footer .agmail {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: var(--cream-dark);
+    opacity: 0.8;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* سطر الحقوق السفلي النقي */
+.futuristic-footer .footer-copy {
+    font-size: 0.8rem;
+    color: var(--gold);
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+}
+
+.futuristic-footer .footer-copy:hover {
+    opacity: 0.9;
+}
+
+/* استجابة الهواتف للشاشات الصغيرة */
+@media (max-width: 480px) {
+    .futuristic-footer .brand-dev-capsule {
+        font-size: 1.15rem;
+        padding: 6px 24px;
+    }
+    .futuristic-footer .brand-nexus-text {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    .futuristic-footer .footer-buttons-container {
+        flex-direction: column;
+        width: 100%;
+        max-width: 260px;
+        gap: 10px;
+    }
+    .futuristic-footer .agbtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+      
+
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDkKr5rlzcUa0KGPZ6vgCZmWzBbXOTfLcc",
+    authDomain: "aligen-connect.firebaseapp.com",
+    databaseURL: "https://aligen-connect-default-rtdb.firebaseio.com",
+    projectId: "aligen-connect",
+    storageBucket: "aligen-connect.firebasestorage.app",
+    messagingSenderId: "200519601485",
+    appId: "1:200519601485:web:d4dec85490471a4986bb04",
+    measurementId: "G-2KCBYDP6QX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+lucide.createIcons();
+
+// ===== LOADER =====
+window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
+});
+
+// ===== SCROLL PROGRESS =====
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('scrollProgress').style.width = pct + '%';
+});
+
+// ===== NAVBAR SCROLL EFFECT =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+        navbar.style.background = 'rgba(8,10,16,0.85)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.borderBottom = '1px solid rgba(212,175,55,0.08)';
+    } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+    }
+});
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    document.getElementById('themeIcon').setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
+    lucide.createIcons();
+    // Update navbar scroll bg for light mode
+    if (next === 'light' && window.scrollY > 80) {
+        navbar.style.background = 'rgba(248,247,244,0.85)';
+    }
+});
+// Override navbar scroll for light theme
+const origScrollHandler = window.onwheel;
+window.addEventListener('scroll', () => {
+    if (document.documentElement.getAttribute('data-theme') === 'light' && window.scrollY > 80) {
+        navbar.style.background = 'rgba(248,247,244,0.85)';
+    }
+});
+
+// ===== MOBILE MENU =====
+window.toggleMobileMenu = function() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+};
+
+// ===== TOAST SYSTEM =====
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+    toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    lucide.createIcons();
+    setTimeout(() => {
+        toast.style.animation = 'toastOut 0.5s forwards';
+        setTimeout(() => toast.remove(), 500);
+    }, 4500);
+}
+
+// ===== REVEAL ON SCROLL =====
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ===== PARTICLE CANVAS (Neural Network Effect) =====
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouse = { x: null, y: null };
+let animFrame;
+
+function resizeCanvas() {
+    const hero = document.getElementById('hero');
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+document.getElementById('hero').addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+});
+document.getElementById('hero').addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.r = Math.random() * 1.5 + 0.5;
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        if (mouse.x !== null) {
+            const dx = this.x - mouse.x, dy = this.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) { this.x += dx * 0.02; this.y += dy * 0.02; }
+        }
+    }
+    draw() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? 'rgba(212,175,55,0.4)' : 'rgba(180,140,20,0.3)';
+        ctx.fill();
+    }
+}
+
+const pCount = Math.min(80, Math.floor((canvas.width * canvas.height) / 12000));
+for (let i = 0; i < pCount; i++) particles.push(new Particle());
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    particles.forEach(p => { p.update(); p.draw(); });
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 140) {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = isDark ? `rgba(212,175,55,${0.06 * (1 - dist / 140)})` : `rgba(180,140,20,${0.08 * (1 - dist / 140)})`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            }
+        }
+    }
+    animFrame = requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ===== COUNTER ANIMATION =====
+let countersAnimated = false;
+const metricsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting && !countersAnimated) {
+            countersAnimated = true;
+            document.querySelectorAll('.metric-number').forEach(el => {
+                const target = parseInt(el.dataset.target);
+                const suffix = el.dataset.suffix || '';
+                const text = el.dataset.text || '';
+                if (text) { el.textContent = text; return; }
+                let current = 0;
+                const step = Math.max(1, Math.floor(target / 60));
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) { current = target; clearInterval(timer); }
+                    el.textContent = current + suffix;
+                }, 30);
+            });
+        }
+    });
+}, { threshold: 0.3 });
+metricsObserver.observe(document.getElementById('metrics'));
+
+// ===== ACCORDION =====
+window.toggleAccordion = function(header) {
+    const item = header.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+};
+
+// ===== SUBJECT SUGGESTIONS =====
+const subjectMap = {
+    consultation: ['استشارة في تحويل رقمي شامل', 'تقييم تقني لمشروع قائم', 'استشارة اختيار التقنيات المناسبة'],
+    partnership: ['اقتراح شراكة استراتيجية', 'عرض تعاون تقني مشترك', 'فرصة شراكة في منتج رقمي'],
+    support: ['طلب دعم فني عاجل', 'إصلاح خطأ في منصة قائمة', 'تحديث أمني لنظامي'],
+    suggestion: ['اقتراح ميزة جديدة', 'تطوير تجربة المستخدم', 'اقتراح تحسين الأداء'],
+    general: ['استفسار عن الخدمات', 'طلب معلومات إضافية', 'سؤال عام']
+};
+window.updateSubjectSuggestions = function() {
+    const val = document.getElementById('c_reason').value;
+    const dl = document.getElementById('subjectSuggestions');
+    dl.innerHTML = '';
+    if (subjectMap[val]) {
+        subjectMap[val].forEach(s => { const opt = document.createElement('option'); opt.value = s; dl.appendChild(opt); });
+        document.getElementById('c_subject').placeholder = 'اختر أو اكتب عنواناً مناسباً..';
+    }
+};
+
+// ===== CHAR COUNTERS =====
+function setupCharCounter(inputId, counterId, max) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    input.addEventListener('input', () => {
+        const len = input.value.length;
+        counter.textContent = `${len} / ${max}`;
+        counter.className = 'char-counter' + (len > max * 0.8 ? ' danger' : len > max * 0.6 ? ' warning' : '');
+    });
+}
+setupCharCounter('c_message', 'c_charCounter', 1000);
+setupCharCounter('p_vision', 'p_charCounter', 2000);
+
+// ===== FEATURE CHIPS =====
+const selectedFeatures = new Set();
+document.querySelectorAll('#featureChips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        const val = chip.dataset.value;
+        if (selectedFeatures.has(val)) { selectedFeatures.delete(val); chip.classList.remove('selected'); }
+        else { selectedFeatures.add(val); chip.classList.add('selected'); }
+    });
+});
+
+// ===== FILE UPLOAD HANDLING =====
+function setupFileDrop(zoneId, inputId, listId) {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    ['dragenter', 'dragover'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.add('dragover'); }));
+    ['dragleave', 'drop'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.remove('dragover'); }));
+    zone.addEventListener('drop', ev => { input.files = ev.dataTransfer.files; renderFiles(); });
+    input.addEventListener('change', renderFiles);
+    function renderFiles() {
+        list.innerHTML = '';
+        Array.from(input.files).forEach(f => {
+            const sizeMB = (f.size / (1024 * 1024)).toFixed(2);
+            if (f.size > 25 * 1024 * 1024) { showToast(`الملف "${f.name}" يتجاوز 25 ميجابايت`, 'error'); return; }
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-2 p-2.5 rounded-lg text-xs';
+            div.style.cssText = 'background:var(--input-bg);color:var(--text-secondary)';
+            div.innerHTML = `<i data-lucide="file-text" class="w-4 h-4 text-amber-400 flex-shrink-0"></i><span class="flex-1 truncate">${f.name}</span><span style="color:var(--text-muted)">${sizeMB} MB</span>`;
+            list.appendChild(div);
+        });
+        lucide.createIcons();
+    }
+}
+setupFileDrop('projectDropZone', 'p_files', 'p_fileList');
+
+// ===== CONTACT FORM SUBMIT =====
+const contactForm = document.getElementById('contactForm');
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('c_fullName').value.trim();
+    const phone = document.getElementById('c_phone').value.trim();
+    if (!name || !phone) { showToast('يرجى تعبئة الحقول المطلوبة (*)', 'error'); return; }
+
+    const btn = document.getElementById('c_submitBtn');
+    const txt = document.getElementById('c_submitText');
+    btn.disabled = true; txt.textContent = 'جاري التشفير والإرسال...'; btn.style.opacity = '0.6';
+
+    push(ref(db, 'connections'), {
+        fullName: name,
+        email: document.getElementById('c_email').value.trim() || 'غير محدد',
+        phone: phone,
+        country: document.getElementById('c_country').value || 'غير محدد',
+        company: document.getElementById('c_company').value.trim() || 'غير محدد',
+        reason: document.getElementById('c_reason').value || 'أخرى',
+        subject: document.getElementById('c_subject').value.trim() || 'غير محدد',
+        message: document.getElementById('c_message').value.trim() || 'لا توجد تفاصيل',
+        timestamp: serverTimestamp(),
+        type: 'contact'
+    }).then(() => {
+        contactForm.style.display = 'none';
+        document.getElementById('contactSuccess').classList.add('active');
+        lucide.createIcons();
+        showToast('تم إرسال رسالتك بنجاح! ✨', 'success');
+        playSuccessSound();
+    }).catch(err => {
+        console.error(err);
+        showToast('حدث خطأ أثناء الإرسال، حاول لاحقاً', 'error');
+    }).finally(() => { btn.disabled = false; txt.textContent = 'إرسال الرسالة بأمان'; btn.style.opacity = '1'; });
+});
+
+window.resetContactForm = function() {
+    contactForm.reset();
+    contactForm.style.display = 'block';
+    document.getElementById('contactSuccess').classList.remove('active');
+    document.getElementById('c_charCounter').textContent = '0 / 1000';
+    document.getElementById('c_charCounter').className = 'char-counter';
+    document.getElementById('c_subject').placeholder = 'اختر نوع التواصل أولاً ليقترح لك عناوين مناسبة';
+    document.getElementById('subjectSuggestions').innerHTML = '';
+};
+
+// ===== PROJECT FORM SUBMIT =====
+const projectForm = document.getElementById('projectForm');
+projectForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('p_name').value.trim();
+    const fullName = document.getElementById('p_fullName').value.trim();
+    const phone = document.getElementById('p_phone').value.trim();
+    if (!name || !fullName || !phone) { showToast('يرجى تعبئة جميع الحقول المطلوبة (*)', 'error'); return; }
+
+    const btn = document.getElementById('p_submitBtn');
+    const txt = document.getElementById('p_submitText');
+    btn.disabled = true; txt.textContent = 'جاري رفع المشروع...'; btn.style.opacity = '0.6';
+
+    push(ref(db, 'projects'), {
+        projectName: name,
+        category: document.getElementById('p_category').value || 'غير محدد',
+        vision: document.getElementById('p_vision').value.trim() || 'لا توجد تفاصيل',
+        features: Array.from(selectedFeatures).join(' | ') || 'لم يتم التحديد',
+        hasFiles: document.getElementById('p_files').files.length > 0 ? `يوجد ${document.getElementById('p_files').files.length} ملفات` : 'لا توجد',
+        clientName: fullName,
+        clientPhone: phone,
+        timestamp: serverTimestamp(),
+        type: 'project'
+    }).then(() => {
+        projectForm.style.display = 'none';
+        document.getElementById('projectSuccess').classList.add('active');
+        lucide.createIcons();
+        showToast('تم استلام مخطط مشروعك بنجاح! 🚀', 'success');
+        playSuccessSound();
+        launchConfetti();
+    }).catch(err => {
+        console.error(err);
+        showToast('حدث خطأ أثناء الإرسال، حاول لاحقاً', 'error');
+    }).finally(() => { btn.disabled = false; txt.textContent = 'إرسال ملف المشروع وبدء التنفيذ'; btn.style.opacity = '1'; });
+});
+
+window.resetProjectForm = function() {
+    projectForm.reset();
+    projectForm.style.display = 'block';
+    document.getElementById('projectSuccess').classList.remove('active');
+    document.getElementById('p_charCounter').textContent = '0 / 2000';
+    document.getElementById('p_charCounter').className = 'char-counter';
+    document.getElementById('p_fileList').innerHTML = '';
+    selectedFeatures.clear();
+    document.querySelectorAll('#featureChips .chip').forEach(c => c.classList.remove('selected'));
+};
+
+// ===== CONFETTI EFFECT =====
+function launchConfetti() {
+    const cvs = document.getElementById('confettiCanvas');
+    const c = cvs.getContext('2d');
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    const pieces = [];
+    const colors = ['#d4af37', '#f5d76e', '#aa8416', '#fff', '#22c55e', '#3b82f6'];
+    for (let i = 0; i < 120; i++) {
+        pieces.push({
+            x: Math.random() * cvs.width, y: Math.random() * cvs.height - cvs.height,
+            w: Math.random() * 8 + 4, h: Math.random() * 4 + 2,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 2,
+            rot: Math.random() * 360, rotV: (Math.random() - 0.5) * 10,
+            opacity: 1
+        });
+    }
+    let frame = 0;
+    function draw() {
+        c.clearRect(0, 0, cvs.width, cvs.height);
+        let alive = false;
+        pieces.forEach(p => {
+            if (p.opacity <= 0) return;
+            alive = true;
+            p.y += p.vy; p.x += p.vx; p.rot += p.rotV;
+            if (p.y > cvs.height) p.opacity -= 0.02;
+            c.save(); c.translate(p.x, p.y); c.rotate(p.rot * Math.PI / 180);
+            c.globalAlpha = p.opacity; c.fillStyle = p.color;
+            c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); c.restore();
+        });
+        frame++;
+        if (alive && frame < 300) requestAnimationFrame(draw);
+        else c.clearRect(0, 0, cvs.width, cvs.height);
+    }
+    draw();
+}
+
+// ===== SUCCESS SOUND (Web Audio API) =====
+function playSuccessSound() {
+    try {
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        [523.25, 659.25, 783.99].forEach((freq, i) => {
+            const osc = ac.createOscillator(); const gain = ac.createGain();
+            osc.type = 'sine'; osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.08, ac.currentTime + i * 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i * 0.15 + 0.4);
+            osc.connect(gain); gain.connect(ac.destination);
+            osc.start(ac.currentTime + i * 0.15);
+            osc.stop(ac.currentTime + i * 0.15 + 0.4);
+        });
+    } catch(e) {}
+}
+
+// ===== ACTIVE NAV LINK =====
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+    navLinks.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
+});
+</script>
+</body>
+</html>

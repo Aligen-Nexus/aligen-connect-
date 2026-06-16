@@ -1,4 +1,238 @@
-<script type="module">
+<footer class="futuristic-footer">
+    <div class="footer-line"></div>
+    <p class="footer-text">تمت الهندسة الرقمية والإبداع الفني بواسطة</p>
+    
+    <div class="designer-branding">
+        <div class="brand-dev-capsule">علي سهيل</div>
+        
+        <span class="brand-nexus-text">AliGen Nexus</span>
+        
+        <div class="footer-buttons-container">
+            <a href="https://aligen-nex-fduws5fc.manus.space" target="_blank" class="agbtn">
+                <i class="fas fa-globe"></i> زيارة موقعي الإلكتروني
+            </a>
+            <a href="https://ali-suhail-cv.netlify.app/#contact" target="_blank" class="agbtn contact-btn">
+                <i class="fas fa-paper-plane"></i> تواصل معنا
+            </a>
+        </div>
+
+        <a href="mailto:aligen@alisuhail.com" class="agmail" id="copyMail">
+            <i class="fas fa-envelope"></i> aligen@alisuhail.com
+        </a>
+    </div>
+    
+    <p class="footer-copy">
+        جميع الحقوق محفوظة © علي سهيل | 
+        <span id="gregorian-year">2026</span> م • 
+        <span id="hijri-year">1447</span> هـ
+    </p>
+
+<style>
+:root {
+    --gold: #d4a843;
+    --gold-light: #f3d487;
+    --cream: #f4f1ea;
+    --cream-dark: #bfae96;
+}
+
+.futuristic-footer {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+    z-index: 10;
+    background: transparent;
+    direction: rtl; /* لضمان اتساق اتجاه النصوص والأرقام العربية */
+}
+
+/* خط فاصل علوي متدرج */
+.futuristic-footer .footer-line {
+    width: 250px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 25px;
+    opacity: 0.6;
+}
+
+/* النص التمهيدي الناعم */
+.futuristic-footer .footer-text {
+    font-size: 0.9rem;
+    color: var(--cream-dark);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    font-family: 'Cairo', sans-serif;
+}
+
+/* حاوية الهوية الرقمية مرتبة عمودياً */
+.futuristic-footer .designer-branding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* الاسم داخل كبسولة فخمة بتأثير زجاجي */
+.futuristic-footer .brand-dev-capsule {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--gold-light);
+    background: linear-gradient(135deg, rgba(107,29,58,0.45), rgba(26,92,71,0.35));
+    border: 1px solid var(--gold);
+    padding: 8px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(212,168,67,0.15);
+    text-shadow: 0 0 10px rgba(212,168,67,0.3);
+    transition: all 0.4s ease;
+    cursor: default;
+}
+
+/* تأثير تفاعلي عند تمرير الماوس فوق كبسولة الاسم */
+.futuristic-footer .brand-dev-capsule:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(212,168,67,0.25);
+    background: linear-gradient(135deg, rgba(107,29,58,0.6), rgba(26,92,71,0.5));
+    color: #fff;
+}
+
+/* اسم البراند تحت الاسم مباشرة */
+.futuristic-footer .brand-nexus-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    margin-bottom: 5px;
+}
+
+/* حاوية الأزرار لترتيبها بجانب بعضها وتضمن التوسيط */
+.futuristic-footer .footer-buttons-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* التنسيق الأساسي للأزرار التفاعلية */
+.futuristic-footer .agbtn {
+    text-decoration: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    color: var(--cream);
+    border: 1px solid rgba(212,168,67,0.4);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* لدعم متصفحات Safari */
+    padding: 8px 18px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.futuristic-footer .agbtn:hover {
+    border-color: var(--gold);
+    background: rgba(212,168,67,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212,168,67,0.15);
+}
+
+/* تمييز زر التواصل ليعطي شعوراً بالمبادرة */
+.futuristic-footer .contact-btn {
+    border-color: var(--gold);
+    background: linear-gradient(90deg, rgba(212,168,67,0.15), transparent);
+}
+
+.futuristic-footer .contact-btn:hover {
+    background: linear-gradient(90deg, rgba(212,168,67,0.25), rgba(212,168,67,0.05));
+}
+
+/* تنسيق البريد الإلكتروني */
+.futuristic-footer .agmail {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: var(--cream-dark);
+    opacity: 0.8;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.futuristic-footer .agmail:hover {
+    color: var(--gold-light);
+}
+
+/* سطر الحقوق السفلي النقي */
+.futuristic-footer .footer-copy {
+    font-size: 0.8rem;
+    color: var(--gold);
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+    font-family: 'Cairo', sans-serif;
+    margin-top: 15px;
+}
+
+.futuristic-footer .footer-copy:hover {
+    opacity: 0.9;
+}
+
+/* استجابة الهواتف والشاشات الصغيرة والتوسيط العمودي المثالي */
+@media (max-width: 480px) {
+    .futuristic-footer .brand-dev-capsule {
+        font-size: 1.15rem;
+        padding: 6px 24px;
+    }
+    .futuristic-footer .brand-nexus-text {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    .futuristic-footer .footer-buttons-container {
+        flex-direction: column;
+        align-items: center; /* تضمن توسط جسم الزر في منتصف الشاشة */
+        width: 100%;
+        gap: 10px;
+    }
+    .futuristic-footer .agbtn {
+        width: auto;
+        min-width: 220px; /* يعطي الأزرار حجماً موحداً وأنيقاً في منتصف الهاتف */
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. تحديث العام الميلادي تلقائياً
+    const currentYearGregorian = new Date().getFullYear();
+    document.getElementById("gregorian-year").textContent = currentYearGregorian;
+
+    // 2. حساب وتحديث العام الهجري تلقائياً (بناءً على تقويم أم القرى الرسمي)
+    try {
+        const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+            year: 'numeric'
+        });
+        // استخراج الأرقام فقط وتصفية النص الناتج
+        let hijriYear = hijriFormatter.format(new Date());
+        hijriYear = hijriYear.replace(/[^0-9٠١٢٣٤٥٦٧٨٩]/g, '').trim(); 
+        
+        document.getElementById("hijri-year").textContent = hijriYear;
+    } catch (e) {
+        // قيمة احتياطية في حال تصفح الموقع من متصفح قديم جداً لا يدعم الأداة الذكية
+        document.getElementById("hijri-year").textContent = "1447"; 
+    }
+});
+</script>
+    <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
   import { getDatabase, ref, child, runTransaction, push, onDisconnect } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
@@ -58,3 +292,6 @@
   newOnlineUserRef.set(true);
   onDisconnect(newOnlineUserRef).remove();
 </script>
+
+
+</footer>

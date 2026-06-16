@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" direction="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AliGen Nexus | لوحة تحليلات المواقع</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #14181f;
+            --gold: #d4a843;
+            --text-color: #f4f1ea;
+            --green: #2ecc71;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+            padding-bottom: 20px;
+        }
+        header h1 { color: var(--gold); margin-bottom: 5px; font-size: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .site-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 168, 67, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .site-title {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-top: 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .online-badge {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--green);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid var(--green);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-label { font-size: 0.85rem; color: #bfae96; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 5px; }
+        .no-data { text-align: center; color: #bfae96; font-size: 1.2rem; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><i class="fas fa-chart-network"></i> شبكة AliGen Nexus للإحصائيات</h1>
+        <p>مراقبة زوار كافة مواقعك الذكية بشكل مباشر ولحظي</p>
+    </header>
+
+    <div id="sites-container">
+        <div class="no-data">جاري الاتصال بـ AliGen Connect وجلب البيانات الحالية...</div>
+    </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+  // نفس إعدادات مشروعك
+  const firebaseConfig = {
+    apiKey: "AIzaSyDkKr5rlzcUa0KGPZ6vgCZmWzBbXOTfLcc",
+    authDomain: "aligen-connect.firebaseapp.com",
+    databaseURL: "https://aligen-connect-default-rtdb.firebaseio.com",
+    projectId: "aligen-connect",
+    storageBucket: "aligen-connect.firebasestorage.app",
+    messagingSenderId: "200519601485",
+    appId: "1:200519601485:web:d4dec85490471a4986bb04",
+    measurementId: "G-2KCBYDP6QX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // حساب التواريخ الحالية لمطابقتها بدقة وعرضها لليوم الحالي
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = year + "-" + String(now.getMonth() + 1).padStart(2, '0');
+  const day = month + "-" + String(now.getDate()).padStart(2, '0');
+
+  const startOfYear = new Date(year, 0, 1);
+  const pastDaysOfYear = (now - startOfYear) / 86400000;
+  const week = year + "-W" + Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+
+  // جلب البيانات ومراقبتها بالوقت الحقيقي
+  const analyticsRef = ref(db, 'analytics');
+  onValue(analyticsRef, (snapshot) => {
+      const container = document.getElementById('sites-container');
+      container.innerHTML = '';
+      
+      const data = snapshot.val();
+      if (!data) {
+          container.innerHTML = '<div class="no-data">لا توجد زيارات مسجلة حتى الآن في الفايرباس الخاص بك.</div>';
+          return;
+      }
+
+      for (let siteId in data) {
+          const site = data[siteId];
+          const siteName = siteId.replace(/_/g, '.'); 
+          
+          const onlineCount = site.online ? Object.keys(site.online).length : 0;
+          
+          const totalVisits = site.total || 0;
+          const dailyVisits = (site.daily && site.daily[day]) ? site.daily[day] : 0;
+          const weeklyVisits = (site.weekly && site.weekly[week]) ? site.weekly[week] : 0;
+          const monthlyVisits = (site.monthly && site.monthly[month]) ? site.monthly[month] : 0;
+          const yearlyVisits = (site.yearly && site.yearly[year]) ? site.yearly[year] : 0;
+
+          const cardHTML = `
+              <div class="site-card">
+                  <div class="site-title">
+                      <span><i class="fas fa-globe"></i> ${siteName}</span>
+                      <span class="online-badge"><i class="fas fa-users"></i> حالياً: ${onlineCount}</span>
+                  </div>
+                  <div class="stats-grid">
+                      <div class="stat-box">
+                          <div class="stat-label">زوار اليوم</div>
+                          <div class="stat-value" style="color: var(--gold);">${dailyVisits}</div>
+                      </div>
+                      <div class="stat-box">
+                          <div class="stat-label">هذا الأسبوع</div>
+                          <div class="stat-value">${weeklyVisits}</div>
+                      </div>
+                      <div class="stat-box">
+                          <div class="stat-label">هذا الشهر</div>
+                          <div class="stat-value">${monthlyVisits}</div>
+                      </div>
+                      <div class="stat-box">
+                          <div class="stat-label">هذه السنة</div>
+                          <div class="stat-value">${yearlyVisits}</div>
+                      </div>
+                      <div class="stat-box">
+                          <div class="stat-label">إجمالي الزيارات</div>
+                          <div class="stat-value" style="color: #fff; font-weight: bold;">${totalVisits}</div>
+                      </div>
+                  </div>
+              </div>
+          `;
+          container.innerHTML += cardHTML;
+      }
+  });
+</script>
+</body>
+</html>
